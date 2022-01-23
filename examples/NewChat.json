@@ -1,0 +1,241 @@
+[
+    {
+        "id": "b2d7864ed5b971ab",
+        "type": "tab",
+        "label": "Novo Chat",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "2d44acd255327148",
+        "type": "http in",
+        "z": "b2d7864ed5b971ab",
+        "name": "/newchat",
+        "url": "/newchat",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 40,
+        "wires": [
+            [
+                "19a0914ec9b422e2"
+            ]
+        ]
+    },
+    {
+        "id": "19a0914ec9b422e2",
+        "type": "init",
+        "z": "b2d7864ed5b971ab",
+        "name": "Inicializa",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "c1c54195fe901ddd"
+            ]
+        ]
+    },
+    {
+        "id": "c1c54195fe901ddd",
+        "type": "switch",
+        "z": "b2d7864ed5b971ab",
+        "name": "Qual ação executar",
+        "property": "action",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "action_chat_start",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 150,
+        "y": 140,
+        "wires": [
+            [
+                "20099c53b36b78cd",
+                "1c211d265708e2cc"
+            ]
+        ]
+    },
+    {
+        "id": "20099c53b36b78cd",
+        "type": "template",
+        "z": "b2d7864ed5b971ab",
+        "name": "Apresentação",
+        "field": "payload.text",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Olá {{slots.CHANNEL_name}}, muito prazer! 🙂\n\nEu sou {{flow.domain.daschat.config.bot.person_genre}} {{flow.domain.daschat.config.bot.person}}, atendente virtual d{{flow.domain.daschat.config.entity.speech_name_genre}} *{{flow.domain.daschat.config.entity.speech_name}}*.",
+        "output": "str",
+        "x": 140,
+        "y": 180,
+        "wires": [
+            [
+                "cbc88d4e4e5770c9"
+            ]
+        ]
+    },
+    {
+        "id": "216e9ef0788555bb",
+        "type": "setslots",
+        "z": "b2d7864ed5b971ab",
+        "name": "Indica ação finalizada",
+        "text": "",
+        "addcheck": false,
+        "slots": [
+            {
+                "slotname": "DAS_NEXT_ACTION",
+                "slotname-type": "str",
+                "slotvalue": "done",
+                "slotvalue-type": "str"
+            }
+        ],
+        "x": 280,
+        "y": 400,
+        "wires": [
+            [
+                "a6c8a4956fd6c2c4"
+            ]
+        ]
+    },
+    {
+        "id": "a6c8a4956fd6c2c4",
+        "type": "finish",
+        "z": "b2d7864ed5b971ab",
+        "name": "",
+        "x": 390,
+        "y": 500,
+        "wires": [
+            [
+                "3edb7bfe07b102da"
+            ]
+        ]
+    },
+    {
+        "id": "3edb7bfe07b102da",
+        "type": "http response",
+        "z": "b2d7864ed5b971ab",
+        "name": "Resposta ao Daschat",
+        "statusCode": "",
+        "headers": {},
+        "x": 260,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "cbc88d4e4e5770c9",
+        "type": "sendtext",
+        "z": "b2d7864ed5b971ab",
+        "name": "Msg de Apresentação",
+        "position": "0",
+        "positionType": "num",
+        "text": "payload.text",
+        "textType": "msg",
+        "x": 260,
+        "y": 240,
+        "wires": [
+            [
+                "2008dbaf8c64301a"
+            ]
+        ]
+    },
+    {
+        "id": "e2bbc0dc25ab4b20",
+        "type": "sendbuttons",
+        "z": "b2d7864ed5b971ab",
+        "name": "Menu Departamentos",
+        "position": "1",
+        "positionType": "num",
+        "text": "Por favor, escolha o departamento com o qual você quer falar",
+        "textType": "str",
+        "addmode": "no",
+        "buttons": [
+            {
+                "title": "Geral",
+                "title-type": "str",
+                "payload": "Geral",
+                "payload-type": "str"
+            },
+            {
+                "title": "Vendas",
+                "title-type": "str",
+                "payload": "Vendas",
+                "payload-type": "str"
+            },
+            {
+                "title": "Entregas",
+                "title-type": "str",
+                "payload": "Entregas",
+                "payload-type": "str"
+            },
+            {
+                "title": "Manutenção",
+                "title-type": "str",
+                "payload": "Manutenção",
+                "payload-type": "str"
+            }
+        ],
+        "x": 600,
+        "y": 320,
+        "wires": [
+            [
+                "216e9ef0788555bb"
+            ]
+        ]
+    },
+    {
+        "id": "2008dbaf8c64301a",
+        "type": "switch",
+        "z": "b2d7864ed5b971ab",
+        "name": "Avalia NLU",
+        "property": "tracker.latest_message.intent.name",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "greet",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 310,
+        "y": 300,
+        "wires": [
+            [
+                "216e9ef0788555bb"
+            ],
+            [
+                "e2bbc0dc25ab4b20"
+            ]
+        ]
+    },
+    {
+        "id": "1c211d265708e2cc",
+        "type": "debug",
+        "z": "b2d7864ed5b971ab",
+        "name": "Debug msg",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 560,
+        "y": 220,
+        "wires": []
+    }
+]
